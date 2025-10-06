@@ -11,7 +11,7 @@ MLX_DIR := ./minilibx-linux
 MLX_LIB := $(MLX_DIR)/libmlx.a
 MLX_LNK := -L$(MLX_DIR) -lmlx -lXext -lX11 -lm -lz
 
-SRC_FILES := main.c map_parse.c map_validation.c
+SRC_FILES := main.c map_parse.c map_validation.c graphics.c
 # Add other .c files here as you create them, e.g., init.c hooks.c render.c utils.c
 SRC := $(addprefix src/, $(SRC_FILES))
 OBJ := $(SRC:.c=.o)
@@ -25,7 +25,10 @@ $(NAME): $(OBJ) $(MLX_LIB) $(LIBFT_LIB)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(MLX_LIB):
-	$(MAKE) -C $(MLX_DIR)
+	@if [ ! -f $(MLX_LIB) ]; then \
+		echo "Building MiniLibX..."; \
+		cd $(MLX_DIR) && chmod +x configure && ./configure && make -f makefile.gen; \
+	fi
 
 $(LIBFT_LIB):
 	$(MAKE) -C $(LIBFT_DIR)
