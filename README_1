@@ -1,0 +1,79 @@
+✅ Current Progress 03/10/2025
+
+Repository structure established
+
+NINJA_SABER
+
+so_long/
+├── Makefile            # builds the game
+├── include/            # header files
+├── src/                # source code files
+├── maps/               # .ber maps (sample created)
+├── assets/             # XPM textures/sprites
+├── minilibx-linux/     # MLX graphics library (compiled, libmlx.a present)
+├── FREE_Samurai.../    # downloaded free sprite asset pack
+├── new_pngs/           # edited sprites (with neon saber modification)
+└── en.subject_so_long.pdf  # project subject reference
+
+
+MiniLibX installed and tested
+test_mlx.c successfully opened a window in WSL2/Windows 11.
+Verified that WSLg renders MLX graphics without external X servers.
+Core game folders created
+include/so_long.h stub added.
+src/ folder prepared with skeleton files (main.c, init.c, hooks.c, etc.).
+maps/ contains at least one valid .ber test map.
+Sprite work in progress
+Samurai sprite sheet downloaded.
+Neon saber modification applied (PNG, correct dimensions preserved).
+
+🔜 Next Steps
+1. Code Architecture
+Implement map parser (map_parse.c)
+Validate rectangular map shape.
+Check closed walls, valid characters (0,1,C,E,P).
+Ensure at least 1 exit, 1 start position, 1 collectible.
+Add pathfinding check (BFS/DFS) for valid route.
+Create render system (render.c)
+Load .xpm textures for walls, floor, collectibles, exit.
+Convert Samurai sprite PNGs → .xpm and integrate for player rendering.
+Draw full map grid with mlx_put_image_to_window.
+Event loop + hooks (hooks.c)
+Handle W/A/S/D movement.
+Prevent walking through walls.
+Collect coins (C) and increment score.
+Print moves count in terminal (and later on-screen).
+Close window with ESC or [X].
+
+2. Game Logic
+
+Define win condition → all collectibles gathered before reaching exit.
+Define optional loss condition (enemies, traps — for later bonus).
+Implement moves++ counter.
+
+3. Asset Integration
+
+Convert samurai run-cycle into .xpm frames.
+Add idle + attack frames (from free pack).
+Integrate lightsaber glow properly into the scene.
+Store assets consistently inside assets/.
+
+4. Bonus Features (after mandatory)
+
+Enemy patrols with collision = loss state.
+Animated tiles (water/lava).
+On-screen HUD (moves, score).
+Sound effects (if allowed).
+
+5. Testing & Compliance
+
+No memory leaks → test with valgrind.
+Peer evaluation prep:
+invalid maps return Error\n with explanation.
+window closes cleanly with ESC and [X].
+evaluation scenarios practiced (map edits, small code changes).
+
+📌 Summary
+
+You now have a fully prepared repo skeleton, working MLX environment, and art assets secured.
+The next major step is to flesh out gameplay mechanics (map parsing, rendering, movement). Once those are stable, integrate the Ninja-Saber sprite animations and polish with bonus features.

@@ -1,0 +1,123 @@
+alchemist@DESKTOP-RRG920C:/mnt/c/Users/User/Desktop/Q_code/so_long$ tree
+.
+├── FREE_Samurai 2D Pixel Art v1.2
+│   ├── License.txt
+│   ├── Preview.png
+│   └── Sprites
+│       ├── ATTACK 1.png
+│       ├── HURT.png
+│       ├── IDLE.png
+│       └── RUN.png
+├── Makefile
+├── Project layout.ini
+├── README_1
+├── assets
+├── en.subject_so_long.pdf
+├── include
+├── maps
+├── minilibx-linux
+│   ├── LICENSE
+│   ├── Makefile
+│   ├── Makefile.gen
+│   ├── Makefile.mk
+│   ├── README.md
+│   ├── configure
+│   ├── libmlx.a
+│   ├── libmlx_Linux.a
+│   ├── man
+│   │   ├── man1
+│   │   │   ├── mlx.1
+│   │   │   ├── mlx_loop.1
+│   │   │   ├── mlx_new_image.1
+│   │   │   ├── mlx_new_window.1
+│   │   │   └── mlx_pixel_put.1
+│   │   └── man3
+│   │       ├── mlx.3
+│   │       ├── mlx_loop.3
+│   │       ├── mlx_new_image.3
+│   │       ├── mlx_new_window.3
+│   │       └── mlx_pixel_put.3
+│   ├── mlx.h
+│   ├── mlx_clear_window.c
+│   ├── mlx_destroy_display.c
+│   ├── mlx_destroy_image.c
+│   ├── mlx_destroy_window.c
+│   ├── mlx_expose_hook.c
+│   ├── mlx_ext_randr.c
+│   ├── mlx_flush_event.c
+│   ├── mlx_get_color_value.c
+│   ├── mlx_get_data_addr.c
+│   ├── mlx_hook.c
+│   ├── mlx_init.c
+│   ├── mlx_int.h
+│   ├── mlx_int_anti_resize_win.c
+│   ├── mlx_int_do_nothing.c
+│   ├── mlx_int_get_visual.c
+│   ├── mlx_int_param_event.c
+│   ├── mlx_int_set_win_event_mask.c
+│   ├── mlx_int_str_to_wordtab.c
+│   ├── mlx_int_wait_first_expose.c
+│   ├── mlx_key_hook.c
+│   ├── mlx_lib_xpm.c
+│   ├── mlx_loop.c
+│   ├── mlx_loop_hook.c
+│   ├── mlx_mouse.c
+│   ├── mlx_mouse_hook.c
+│   ├── mlx_new_image.c
+│   ├── mlx_new_window.c
+│   ├── mlx_pixel_put.c
+│   ├── mlx_put_image_to_window.c
+│   ├── mlx_rgb.c
+│   ├── mlx_screen_size.c
+│   ├── mlx_set_font.c
+│   ├── mlx_string_put.c
+│   ├── mlx_xpm.c
+│   ├── mlx_xpm.c.ok
+│   ├── obj
+│   │   ├── mlx_clear_window.o
+│   │   ├── mlx_destroy_display.o
+│   │   ├── mlx_destroy_image.o
+│   │   ├── mlx_destroy_window.o
+│   │   ├── mlx_expose_hook.o
+│   │   ├── mlx_flush_event.o
+│   │   ├── mlx_get_color_value.o
+│   │   ├── mlx_get_data_addr.o
+│   │   ├── mlx_hook.o
+│   │   ├── mlx_init.o
+│   │   ├── mlx_int_anti_resize_win.o
+│   │   ├── mlx_int_do_nothing.o
+│   │   ├── mlx_int_get_visual.o
+│   │   ├── mlx_int_param_event.o
+│   │   ├── mlx_int_set_win_event_mask.o
+│   │   ├── mlx_int_str_to_wordtab.o
+│   │   ├── mlx_int_wait_first_expose.o
+│   │   ├── mlx_key_hook.o
+│   │   ├── mlx_loop.o
+│   │   ├── mlx_loop_hook.o
+│   │   ├── mlx_mouse.o
+│   │   ├── mlx_mouse_hook.o
+│   │   ├── mlx_new_image.o
+│   │   ├── mlx_new_window.o
+│   │   ├── mlx_pixel_put.o
+│   │   ├── mlx_put_image_to_window.o
+│   │   ├── mlx_rgb.o
+│   │   ├── mlx_screen_size.o
+│   │   ├── mlx_set_font.o
+│   │   ├── mlx_string_put.o
+│   │   └── mlx_xpm.o
+│   ├── rgb2c.pl
+│   └── test
+│       ├── Makefile.gen
+│       ├── Makefile.mk
+│       ├── main.c
+│       ├── main.o
+│       ├── mlx-test
+│       ├── new_win.c
+│       ├── open.xpm
+│       ├── open24.xpm
+│       ├── open30.xpm
+│       └── run_tests.sh
+├── minilibx-linux.tgz
+├── new_pngs
+│   └── ninja_saber_run.png
+└── src
