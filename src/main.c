@@ -41,6 +41,8 @@ int main(int argc, char **argv)
 	validate_map(&game);
 	game.moves = 0;  // Initialize movement counter
 	game.victory = 0;  // Initialize victory flag
+	game.player_health = PLAYER_MAX_HEALTH;  // Initialize player health
+	game.player_last_attack_ms = 0;  // Initialize attack cooldown
 	
 	// Determine current map number from filename
 	if (strstr(argv[1], "map1.ber"))
@@ -60,20 +62,24 @@ int main(int argc, char **argv)
 	printf("3. Loading textures...\n");
 	init_textures(&game);
 	
-	// Step 4: Render the map
-	printf("4. Rendering initial map...\n");
+	// Step 4: Initialize enemies
+	printf("4. Initializing enemies...\n");
+	init_enemies(&game);
+	
+	// Step 5: Render the map
+	printf("5. Rendering initial map...\n");
 	render_map(&game);
+	render_enemies(&game);
 	
-
-	
-	// Step 5: Set up event handlers
-	printf("5. Setting up event handlers...\n");
+	// Step 6: Set up event handlers
+	printf("6. Setting up event handlers...\n");
 	set_game_pointer(&game);
-	mlx_hook(game.win, 17, 1L<<17, close_wrapper, &game);  // Window close button
-	mlx_key_hook(game.win, key_wrapper, &game);            // Key press
+	mlx_hook(game.win, 17, 1L<<17, close_wrapper, &game);          // Window close button
+	mlx_hook(game.win, 2, 1L<<0, key_press_handler, &game);        // KeyPress events
 	
-	// Step 6: Start the game loop
-	printf("6. Starting game loop... (Press ESC to quit)\n");
+	// Step 7: Start the game loop
+	printf("7. Starting game loop... (Press ESC to quit, SPACE to attack)\n");
+	printf("Player Health: %d/%d\n", game.player_health, PLAYER_MAX_HEALTH);
 	printf("====================================\n");
 	mlx_loop(game.mlx);
 	

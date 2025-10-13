@@ -11,8 +11,11 @@ MLX_DIR := ./minilibx-linux
 MLX_LIB := $(MLX_DIR)/libmlx.a
 MLX_LNK := -L$(MLX_DIR) -lmlx -lXext -lX11 -lm -lz
 
-SRC_FILES := main.c map_parse.c map_validation.c graphics.c
-# Add other .c files here as you create them, e.g., init.c hooks.c render.c utils.c
+SRC_FILES := main.c map_parse.c map_validation.c graphics.c \
+			 combat/attack_system.c \
+			 enemy/enemy_init.c enemy/enemy_update.c enemy/enemy_render.c \
+			 animation/animation_system.c \
+			 utils/timer.c
 SRC := $(addprefix src/, $(SRC_FILES))
 OBJ := $(SRC:.c=.o)
 

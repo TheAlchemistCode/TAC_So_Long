@@ -1,0 +1,72 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   animation_system.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: alchemist <alchemist@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/13 00:00:00 by alchemist           #+#    #+#             */
+/*   Updated: 2025/10/13 00:00:00 by alchemist          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../../include/so_long.h"
+#include <stdio.h>
+
+void	update_enemy_animation(t_enemy *enemy, unsigned long current_time)
+{
+	unsigned long	elapsed;
+
+	if (!enemy->is_attacking)
+		return;
+	
+	elapsed = current_time - enemy->attack_anim_start_ms;
+	
+	// Switch frames during animation
+	if (elapsed < ATTACK_ANIM_DURATION_MS / 2)
+		enemy->attack_frame_index = 0;
+	else if (elapsed < ATTACK_ANIM_DURATION_MS)
+		enemy->attack_frame_index = 1;
+	else
+	{
+		// Animation finished
+		enemy->is_attacking = 0;
+		enemy->attack_frame_index = 0;
+	}
+}
+
+void	load_enemy_textures(t_game *game, t_enemy *enemy)
+{
+	int	width;
+	int	height;
+
+	// Load idle sprite
+	enemy->idle_img = mlx_xpm_file_to_image(game->mlx, 
+		"assets/enemy/badsprite_idle.xpm", &width, &height);
+	if (!enemy->idle_img)
+	{
+		printf("Warning: Failed to load enemy idle sprite\n");
+	}
+	
+	// Load attack animation frames
+	enemy->attack_frames[0] = mlx_xpm_file_to_image(game->mlx, 
+		"assets/enemy/badsprite_attack.xpm", &width, &height);
+	enemy->attack_frames[1] = mlx_xpm_file_to_image(game->mlx, 
+		"assets/enemy/badsprite_idle.xpm", &width, &height);
+	
+	if (!enemy->attack_frames[0] || !enemy->attack_frames[1])
+	{
+		printf("Warning: Failed to load enemy attack animation frames\n");
+	}
+	
+	// Load death sprite
+	enemy->dead_img = mlx_xpm_file_to_image(game->mlx, 
+		"assets/enemy/badsprite_dead.xpm", &width, &height);
+	if (!enemy->dead_img)
+	{
+		printf("Warning: Failed to load enemy death sprite\n");
+	}
+	
+	enemy->frame_w = width;
+	enemy->frame_h = height;
+}
