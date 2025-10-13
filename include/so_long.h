@@ -28,13 +28,17 @@ typedef struct s_game
 	int		map_width;
 	int		map_height;
 	int		collectibles;
+	int		collected;
+	int		moves;
 	int		player_x;
 	int		player_y;
 	int		exit_x;
 	int		exit_y;
+	int		victory;
+	int		current_map;
 	// Graphics textures
-	void	*wall_img;		// watertile.png (walls = '1')
-	void	*floor_img;		// tile.png (floor = '0')
+	void	*wall_img;			// bgtile_bush.xpm (walls = '1')
+	void	*floor_img;			// bgtile_walkable.xpm (floor = '0')
 	void	*collectible_img;
 	void	*exit_img;
 	void	*player_img;
@@ -43,11 +47,17 @@ typedef struct s_game
 // Function prototypes
 void	parse_map(char *filename, t_game *game);
 void	validate_map(t_game *game);
+void	validate_path(t_game *game);
 // Graphics functions
 void	init_graphics(t_game *game);
 void	init_textures(t_game *game);
 void	render_map(t_game *game);
 int		move_player(t_game *game, int new_x, int new_y);
-int		handle_keypress(int keycode, t_game *game);
-int		close_game(t_game *game);
+int	handle_keypress(int keycode, t_game *game);
+int	close_game(t_game *game);
+void	display_victory(t_game *game);
+void	load_next_map(t_game *game);
+void	set_game_pointer(t_game *game);
+int	key_wrapper(int keycode);
+int	close_wrapper();
 #endif

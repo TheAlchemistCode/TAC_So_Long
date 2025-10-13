@@ -12,6 +12,7 @@
 
 #include "so_long.h"
 #include <stdio.h> // For error messages
+#include "../libft/libft.h" // For ft_strdup
 
 // Forward declarations for static functions
 static void	check_components(t_game *game);
@@ -23,8 +24,8 @@ void	validate_map(t_game *game)
 	check_components(game);
 	check_shape(game);
 	check_walls(game);
-	// We will add the path check function here later
-	printf("Map validation successful (so far)!\n");
+	validate_path(game);
+	printf("Map validation successful!\n");
 }static void	check_components(t_game *game)
 {
     int	p_count;
@@ -47,6 +48,7 @@ void	validate_map(t_game *game)
                 p_count++;
                 game->player_x = x;
                 game->player_y = y;
+
             }
             else if (game->map[y][x] == 'E')
                 e_count++;
@@ -111,4 +113,85 @@ static void	check_walls(t_game *game)
         }
         i++;
     }
+}
+
+static void	flood_fill(char **map_copy, int x, int y, int width, int height)
+{
+	// Check bounds
+	if (x < 0 || x >= width || y < 0 || y >= height)
+		return;
+		
+	// Check if already visited or is a wall
+	if (map_copy[y][x] == '1' || map_copy[y][x] == 'V')
+		return;
+		
+	// Mark as visited
+	map_copy[y][x] = 'V';
+	
+	// Recursively visit all 4 directions
+	flood_fill(map_copy, x + 1, y, width, height);
+	flood_fill(map_copy, x - 1, y, width, height);
+	flood_fill(map_copy, x, y + 1, width, height);
+	flood_fill(map_copy, x, y - 1, width, height);
+}
+
+void	validate_path(t_game *game)
+{
+	char	**map_copy;
+	int		i;
+	int		j;
+	int		collectibles_reachable = 0;
+	int		exit_reachable = 0;
+	
+	// Create a copy of the map for flood fill
+	map_copy = malloc(sizeof(char *) * game->map_height);
+	if (!map_copy)
+	{
+		printf("Error: Memory allocation failed\n");
+		exit(1);
+	}
+	
+	for (i = 0; i < game->map_height; i++)
+	{
+		map_copy[i] = ft_strdup(game->map[i]);
+		if (!map_copy[i])
+		{
+			printf("Error: Memory allocation failed\n");
+			exit(1);
+		}
+	}
+	
+	// Start flood fill from player position
+	flood_fill(map_copy, game->player_x, game->player_y, game->map_width, game->map_height);
+	
+	// Check if all collectibles and exit are reachable
+	for (i = 0; i < game->map_height; i++)
+	{
+		for (j = 0; j < game->map_width; j++)
+		{
+			if (game->map[i][j] == 'C' && map_copy[i][j] == 'V')
+				collectibles_reachable++;
+			else if (game->map[i][j] == 'E' && map_copy[i][j] == 'V')
+				exit_reachable = 1;
+		}
+	}
+	
+	// Free the map copy
+	for (i = 0; i < game->map_height; i++)
+		free(map_copy[i]);
+	free(map_copy);
+	
+	// Check results
+	if (collectibles_reachable != game->collectibles)
+	{
+		printf("Error: Not all collectibles are reachable from player start position\n");
+		exit(1);
+	}
+	if (!exit_reachable)
+	{
+		printf("Error: Exit is not reachable from player start position\n");
+		exit(1);
+	}
+	
+	printf("Path validation: All %d collectibles and exit are reachable!\n", game->collectibles);
 }
