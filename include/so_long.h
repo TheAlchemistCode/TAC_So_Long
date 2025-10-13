@@ -25,6 +25,11 @@
 # define PLAYER_MAX_HEALTH 100
 # define ENEMY_ATTACK_DAMAGE 20
 # define PLAYER_ATTACK_DAMAGE 50
+# define ATTACK_DIR_LEFT 0
+# define ATTACK_DIR_RIGHT 1
+# define PLAYER_ATTACK_ANIM_DURATION 200
+# define IDLE_FRAME_0_DURATION 600
+# define IDLE_FRAME_1_DURATION 500
 
 // Enemy structure
 typedef struct s_enemy
@@ -61,6 +66,12 @@ typedef struct s_game
 	int		player_y;
 	int		player_health;
 	unsigned long	player_last_attack_ms;
+	int		player_is_attacking;
+	int		player_attack_direction;
+	unsigned long	player_attack_start_ms;
+	int		player_idle_frame;
+	unsigned long	player_idle_frame_start_ms;
+	unsigned long	player_last_action_ms;
 	int		exit_x;
 	int		exit_y;
 	int		victory;
@@ -71,6 +82,9 @@ typedef struct s_game
 	void	*collectible_img;
 	void	*exit_img;
 	void	*player_img;
+	void	*player_idle_img2;
+	void	*player_attack_left_img;
+	void	*player_attack_right_img;
 	// Enemy system
 	t_enemy	*enemies;
 	int		enemy_count;
@@ -93,6 +107,9 @@ void	load_next_map(t_game *game);
 void	set_game_pointer(t_game *game);
 int	key_press_handler(int keycode, void *param);
 int	close_wrapper();
+void	*get_player_sprite(t_game *game);
+void	update_player_animation(t_game *game);
+int	game_loop(t_game *game);
 
 // Enemy functions
 void	init_enemies(t_game *game);

@@ -61,7 +61,7 @@ void	init_textures(t_game *game)
 		exit(1);
 	}
 
-	game->player_img = mlx_xpm_file_to_image(game->mlx, "assets/player/ninja_idle.xpm", &width, &height);
+	game->player_img = mlx_xpm_file_to_image(game->mlx, "assets/player/goodsprite_idle.xpm", &width, &height);
 	if (!game->player_img)
 	{
 		write(2, "Error: Failed to load player texture\n", 38);
@@ -79,6 +79,27 @@ void	init_textures(t_game *game)
 	if (!game->exit_img)
 	{
 		write(2, "Error: Failed to load exit texture\n", 36);
+		exit(1);
+	}
+
+	game->player_attack_left_img = mlx_xpm_file_to_image(game->mlx, "assets/player/goodsprite_attack_L.xpm", &width, &height);
+	if (!game->player_attack_left_img)
+	{
+		write(2, "Error: Failed to load player attack left texture\n", 50);
+		exit(1);
+	}
+
+	game->player_attack_right_img = mlx_xpm_file_to_image(game->mlx, "assets/player/goodsprite_attack_R.xpm", &width, &height);
+	if (!game->player_attack_right_img)
+	{
+		write(2, "Error: Failed to load player attack right texture\n", 51);
+		exit(1);
+	}
+
+	game->player_idle_img2 = mlx_xpm_file_to_image(game->mlx, "assets/player/goodsprite_idle_2.xpm", &width, &height);
+	if (!game->player_idle_img2)
+	{
+		write(2, "Error: Failed to load player idle 2 texture\n", 45);
 		exit(1);
 	}
 	
@@ -104,7 +125,10 @@ void	render_map(t_game *game)
 				mlx_put_image_to_window(game->mlx, game->win, game->floor_img, x * TILE_SIZE, y * TILE_SIZE);
 			
 			if (game->map[y][x] == 'P')
-				mlx_put_image_to_window(game->mlx, game->win, game->player_img, x * TILE_SIZE, y * TILE_SIZE);
+			{
+				void *player_sprite = get_player_sprite(game);
+				mlx_put_image_to_window(game->mlx, game->win, player_sprite, x * TILE_SIZE, y * TILE_SIZE);
+			}
 			else if (game->map[y][x] == 'C')
 				mlx_put_image_to_window(game->mlx, game->win, game->collectible_img, x * TILE_SIZE, y * TILE_SIZE);
 			else if (game->map[y][x] == 'E')
@@ -137,10 +161,14 @@ int	handle_keypress(int keycode, t_game *game)
 		move_player(game, game->player_x + 1, game->player_y);
 	else if (keycode == 32)
 	{
-		// Spacebar - player attacks
-		player_attack(game);
-		render_map(game);
-		render_enemies(game);
+		// Spacebar - player attacks (only if not already attacking)
+		if (!game->player_is_attacking)
+		{
+			player_attack(game);
+			// Immediately render to show attack animation
+			render_map(game);
+			render_enemies(game);
+		}
 	}
 	
 	return (0);
@@ -250,6 +278,11 @@ int	move_player(t_game *game, int new_x, int new_y)
 	game->map[new_y][new_x] = 'P';
 	game->moves++;
 
+	// Reset idle animation on movement
+	game->player_last_action_ms = get_time_ms();
+	game->player_idle_frame = 0;
+	game->player_idle_frame_start_ms = game->player_last_action_ms;
+
 	printf("Moves: %d | Health: %d/%d\n", game->moves, game->player_health, PLAYER_MAX_HEALTH);
 	
 	// Update enemies after player moves
@@ -274,6 +307,12 @@ int	close_game(t_game *game)
 		mlx_destroy_image(game->mlx, game->collectible_img);
 	if (game->exit_img)
 		mlx_destroy_image(game->mlx, game->exit_img);
+	if (game->player_attack_left_img)
+		mlx_destroy_image(game->mlx, game->player_attack_left_img);
+	if (game->player_attack_right_img)
+		mlx_destroy_image(game->mlx, game->player_attack_right_img);
+	if (game->player_idle_img2)
+		mlx_destroy_image(game->mlx, game->player_idle_img2);
 	
 	// Free enemy resources
 	free_enemies(game);
@@ -332,6 +371,12 @@ void	cleanup_level(t_game *game)
 		mlx_destroy_image(game->mlx, game->collectible_img);
 	if (game->exit_img)
 		mlx_destroy_image(game->mlx, game->exit_img);
+	if (game->player_attack_left_img)
+		mlx_destroy_image(game->mlx, game->player_attack_left_img);
+	if (game->player_attack_right_img)
+		mlx_destroy_image(game->mlx, game->player_attack_right_img);
+	if (game->player_idle_img2)
+		mlx_destroy_image(game->mlx, game->player_idle_img2);
 	
 	game->wall_img = NULL;
 	game->floor_img = NULL;
@@ -445,4 +490,112 @@ void	load_next_map(t_game *game)
 	printf("Collectibles to find: %d\n", game->collectibles);
 	printf("Enemies to defeat: %d\n", game->enemy_count);
 	printf("Good luck!\n\n");
+}
+
+// Player sprite selector function
+void	*get_player_sprite(t_game *game)
+{
+	unsigned long	now;
+	unsigned long	elapsed;
+
+	now = get_time_ms();
+
+	// Check if currently in attack animation
+	if (game->player_is_attacking)
+	{
+		elapsed = now - game->player_attack_start_ms;
+		
+		if (elapsed < PLAYER_ATTACK_ANIM_DURATION)
+		{
+			// Still in animation duration, show attack sprite
+			if (game->player_attack_direction == ATTACK_DIR_LEFT)
+				return (game->player_attack_left_img);
+			else
+				return (game->player_attack_right_img);
+		}
+		else
+		{
+			// Animation finished, reset flag and idle animation
+			game->player_is_attacking = 0;
+			game->player_last_action_ms = now;
+			game->player_idle_frame = 0;
+			game->player_idle_frame_start_ms = now;
+		}
+	}
+	
+	// Idle animation - cycle between two frames
+	elapsed = now - game->player_idle_frame_start_ms;
+	
+	if (game->player_idle_frame == 0)
+	{
+		// Frame 0: show for 600ms
+		if (elapsed >= IDLE_FRAME_0_DURATION)
+		{
+			// Switch to frame 1
+			game->player_idle_frame = 1;
+			game->player_idle_frame_start_ms = now;
+		}
+		// Return frame 0 or frame 1 based on current frame
+		if (game->player_idle_frame == 1)
+			return (game->player_idle_img2 ? game->player_idle_img2 : game->player_img);
+		return (game->player_img);
+	}
+	else
+	{
+		// Frame 1: show for 500ms
+		if (elapsed >= IDLE_FRAME_1_DURATION)
+		{
+			// Switch back to frame 0
+			game->player_idle_frame = 0;
+			game->player_idle_frame_start_ms = now;
+		}
+		// Return frame 0 or frame 1 based on current frame
+		if (game->player_idle_frame == 0)
+			return (game->player_img);
+		return (game->player_idle_img2 ? game->player_idle_img2 : game->player_img);
+	}
+}
+
+// Update player animation state
+void	update_player_animation(t_game *game)
+{
+	unsigned long		now;
+	static unsigned long	last_render = 0;
+
+	now = get_time_ms();
+
+	if (game->player_is_attacking)
+	{
+		if (now - game->player_attack_start_ms >= PLAYER_ATTACK_ANIM_DURATION)
+		{
+			// Animation complete, reset to idle
+			game->player_is_attacking = 0;
+			game->player_last_action_ms = now;
+			// Reset idle animation to start from frame 0
+			game->player_idle_frame = 0;
+			game->player_idle_frame_start_ms = now;
+			// Trigger one final render to show idle sprite
+			render_map(game);
+			render_enemies(game);
+			last_render = now;
+		}
+	}
+	else
+	{
+		// Idle animation - trigger periodic renders for smooth animation
+		if (now - last_render > 50)
+		{
+			render_map(game);
+			render_enemies(game);
+			last_render = now;
+		}
+	}
+}
+
+// Game loop hook for continuous updates
+int	game_loop(t_game *game)
+{
+	// Update player animation state
+	update_player_animation(game);
+	return (0);
 }

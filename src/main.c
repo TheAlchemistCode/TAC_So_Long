@@ -43,6 +43,9 @@ int main(int argc, char **argv)
 	game.victory = 0;  // Initialize victory flag
 	game.player_health = PLAYER_MAX_HEALTH;  // Initialize player health
 	game.player_last_attack_ms = 0;  // Initialize attack cooldown
+	game.player_idle_frame = 0;  // Start with first idle frame
+	game.player_idle_frame_start_ms = get_time_ms();  // Initialize idle timer
+	game.player_last_action_ms = get_time_ms();  // Initialize action timer
 	
 	// Determine current map number from filename
 	if (strstr(argv[1], "map1.ber"))
@@ -77,7 +80,10 @@ int main(int argc, char **argv)
 	mlx_hook(game.win, 17, 1L<<17, close_wrapper, &game);          // Window close button
 	mlx_hook(game.win, 2, 1L<<0, key_press_handler, &game);        // KeyPress events
 	
-	// Step 7: Start the game loop
+	// Step 7: Set up game loop hook for continuous updates
+	mlx_loop_hook(game.mlx, game_loop, &game);
+	
+	// Step 8: Start the game loop
 	printf("7. Starting game loop... (Press ESC to quit, SPACE to attack)\n");
 	printf("Player Health: %d/%d\n", game.player_health, PLAYER_MAX_HEALTH);
 	printf("====================================\n");

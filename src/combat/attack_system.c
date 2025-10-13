@@ -28,8 +28,13 @@ void	player_attack(t_game *game)
 {
 	unsigned long	current_time;
 	int				i;
+	int				dx;
 
 	current_time = get_time_ms();
+	
+	// Prevent attack if already in animation
+	if (game->player_is_attacking)
+		return;
 	
 	// Check attack cooldown
 	if (current_time - game->player_last_attack_ms < PLAYER_ATTACK_COOLDOWN_MS)
@@ -43,8 +48,34 @@ void	player_attack(t_game *game)
 			is_adjacent(game->player_x, game->player_y, 
 						game->enemies[i].x, game->enemies[i].y))
 		{
+			// Determine attack direction based on enemy position
+			dx = game->enemies[i].x - game->player_x;
+			
+			// Set attack animation state
+			game->player_is_attacking = 1;
+			game->player_attack_start_ms = current_time;
+			
+			if (dx > 0)
+			{
+				// Enemy is to the right, attack right
+				game->player_attack_direction = ATTACK_DIR_RIGHT;
+				printf("⚔️  Player attacks RIGHT!\n");
+			}
+			else if (dx < 0)
+			{
+				// Enemy is to the left, attack left
+				game->player_attack_direction = ATTACK_DIR_LEFT;
+				printf("⚔️  Player attacks LEFT!\n");
+			}
+			else
+			{
+				// Enemy is above/below, use previous direction or default to right
+				game->player_attack_direction = ATTACK_DIR_RIGHT;
+				printf("⚔️  Player attacks (vertical)!\n");
+			}
+			
 			game->enemies[i].health -= PLAYER_ATTACK_DAMAGE;
-			printf("💥 Player attacks enemy! Enemy health: %d\n", game->enemies[i].health);
+			printf("💥 Enemy health: %d\n", game->enemies[i].health);
 			
 			if (game->enemies[i].health <= 0)
 			{
@@ -58,6 +89,9 @@ void	player_attack(t_game *game)
 			}
 			
 			game->player_last_attack_ms = current_time;
+			game->player_last_action_ms = current_time;
+			game->player_idle_frame = 0;
+			game->player_idle_frame_start_ms = current_time;
 			return;
 		}
 		i++;
