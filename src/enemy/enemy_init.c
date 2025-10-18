@@ -13,6 +13,7 @@
 #include "../../include/so_long.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 static int	count_enemies(t_game *game)
 {
@@ -78,10 +79,19 @@ void	init_enemies(t_game *game)
 				game->enemies[index].is_dying = 0;
 				game->enemies[index].death_start_ms = 0;
 				
+				// Movement initialization
+				game->enemies[index].start_x = x;
+				game->enemies[index].start_y = y;
+				game->enemies[index].last_move_time = get_time_ms();
+				game->enemies[index].direction = rand() % 4;
+				game->enemies[index].patrol_length = 5;
+				game->enemies[index].pattern = (index % 2 == 0) ? PATROL_HORIZONTAL : PATROL_VERTICAL;
+				
 				// Load textures for this enemy
 				load_enemy_textures(game, &game->enemies[index]);
 				
-				printf("Enemy initialized at position (%d, %d)\n", x, y);
+				printf("Enemy initialized at position (%d, %d) with pattern %d\n", 
+					x, y, game->enemies[index].pattern);
 				index++;
 			}
 			x++;

@@ -22,7 +22,7 @@
 # define PLAYER_ATTACK_COOLDOWN_MS 300
 # define ATTACK_ANIM_DURATION_MS 200
 # define DEATH_ANIM_DURATION_MS 300
-# define PLAYER_MAX_HEALTH 100
+# define PLAYER_MAX_HEALTH 160
 # define ENEMY_ATTACK_DAMAGE 20
 # define PLAYER_ATTACK_DAMAGE 50
 # define ATTACK_DIR_LEFT 0
@@ -30,6 +30,17 @@
 # define PLAYER_ATTACK_ANIM_DURATION 200
 # define IDLE_FRAME_0_DURATION 600
 # define IDLE_FRAME_1_DURATION 500
+# define ENEMY_MOVE_DELAY_MS 2000
+# define ENEMY_MIN_TILES 2
+# define ENEMY_MAX_TILES 3
+
+// Movement patterns for enemies
+typedef enum e_movement_pattern
+{
+	PATROL_HORIZONTAL,
+	PATROL_VERTICAL,
+	PATROL_RANDOM
+}	t_movement_pattern;
 
 // Enemy structure
 typedef struct s_enemy
@@ -49,6 +60,13 @@ typedef struct s_enemy
 	unsigned long	death_start_ms;
 	int				frame_w;
 	int				frame_h;
+	// Movement fields
+	int				start_x;
+	int				start_y;
+	unsigned long	last_move_time;
+	int				direction;
+	int				patrol_length;
+	t_movement_pattern	pattern;
 }	t_enemy;
 
 // Define your game structures here, for example:
@@ -117,6 +135,9 @@ void	update_enemies(t_game *game);
 void	render_enemies(t_game *game);
 void	enemy_attack_player(t_game *game, t_enemy *enemy);
 void	free_enemies(t_game *game);
+void	update_enemy_movement(t_game *game);
+int		is_valid_enemy_position(t_game *game, int x, int y);
+void	calculate_next_position(t_game *game, t_enemy *enemy, int distance, int *new_x, int *new_y);
 
 // Combat functions
 int		is_adjacent(int x1, int y1, int x2, int y2);
