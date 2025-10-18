@@ -14,16 +14,13 @@
 #include <fcntl.h>
 #include <stdio.h>
 
-// A simple implementation of get_next_line would be needed here,
-// or you can use your own from the libft project.
-// For now, we'll assume a function `get_next_line` exists.
-char *get_next_line(int fd);
+char	*get_next_line(int fd);
 
-static int get_width(char *filename)
+static int	get_width(char *filename)
 {
-	int fd;
-	char *line;
-	int width;
+	int		fd;
+	char	*line;
+	int		width;
 
 	fd = open(filename, O_RDONLY);
 	if (fd < 0)
@@ -42,11 +39,11 @@ static int get_width(char *filename)
 	return (width);
 }
 
-static int get_height(char *filename)
+static int	get_height(char *filename)
 {
-	int fd;
-	char *line;
-	int height;
+	int		fd;
+	char	*line;
+	int		height;
 
 	fd = open(filename, O_RDONLY);
 	if (fd < 0)
@@ -61,28 +58,29 @@ static int get_height(char *filename)
 	return (height);
 }
 
-void parse_map(char *filename, t_game *game)
+void	parse_map(char *filename, t_game *game)
 {
-	int fd;
-	char *line;
-	int i;
+	int		fd;
+	char	*line;
+	int		i;
 
 	game->map_width = get_width(filename);
 	game->map_height = get_height(filename);
 	game->map = malloc(sizeof(char *) * (game->map_height + 1));
 	if (!game->map)
-		return; // Proper error handling will be added later
-
+		return ;
 	fd = open(filename, O_RDONLY);
 	if (fd < 0)
-		return; // Proper error handling
-
+		return ;
 	i = 0;
-	while ((line = get_next_line(fd)) != NULL)
+	line = get_next_line(fd);
+	while (line != NULL)
 	{
 		game->map[i] = line;
 		i++;
+		line = get_next_line(fd);
 	}
 	game->map[i] = NULL;
 	close(fd);
 }
+

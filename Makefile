@@ -11,7 +11,11 @@ MLX_DIR := ./minilibx-linux
 MLX_LIB := $(MLX_DIR)/libmlx.a
 MLX_LNK := -L$(MLX_DIR) -lmlx -lXext -lX11 -lm -lz
 
-SRC_FILES := main.c map_parse.c map_validation.c graphics.c \
+SRC_FILES := main.c map_parse.c map_validation.c \
+			 graphics/init_graphics.c graphics/textures.c graphics/render.c \
+			 graphics/input_handler.c graphics/movement.c graphics/cleanup.c \
+			 graphics/player_sprite.c graphics/level_management.c \
+			 graphics/level_setup.c \
 			 combat/attack_system.c \
 			 enemy/enemy_init.c enemy/enemy_update.c enemy/enemy_render.c \
 			 animation/animation_system.c \
@@ -38,6 +42,7 @@ $(LIBFT_LIB):
 
 clean:
 	rm -f $(OBJ)
+	rm -f src/graphics.o
 	$(MAKE) -C $(LIBFT_DIR) clean
 
 fclean: clean

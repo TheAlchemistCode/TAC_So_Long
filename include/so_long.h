@@ -124,6 +124,8 @@ int	close_game(t_game *game);
 void	cleanup_level(t_game *game);
 void	display_victory(t_game *game);
 void	load_next_map(t_game *game);
+int		check_next_map_exists(char *map_path);
+void	init_next_level(t_game *game, char *map_path);
 void	set_game_pointer(t_game *game);
 int	key_press_handler(int keycode, void *param);
 int	close_wrapper();
