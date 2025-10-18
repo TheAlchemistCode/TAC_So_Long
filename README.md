@@ -297,7 +297,7 @@ Educational use only.
 make
 
 # 2. Run with enemy map
-./so_long maps/map_enemies.ber
+./so_long maps/map0.ber
 
 # 3. Play!
 # - Use WASD to move
