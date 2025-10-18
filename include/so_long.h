@@ -97,6 +97,7 @@ typedef struct s_game
 	// Graphics textures
 	void	*wall_img;
 	void	*floor_img;
+	void	*stat_tile_img;
 	void	*collectible_img;
 	void	*exit_img;
 	void	*player_img;
@@ -116,6 +117,7 @@ void	validate_path(t_game *game);
 void	init_graphics(t_game *game);
 void	init_textures(t_game *game);
 void	render_map(t_game *game);
+void	render_ui_overlay(t_game *game);
 int		move_player(t_game *game, int new_x, int new_y);
 int	handle_keypress(int keycode, t_game *game);
 int	close_game(t_game *game);

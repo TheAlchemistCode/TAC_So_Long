@@ -61,6 +61,13 @@ void	init_textures(t_game *game)
 		exit(1);
 	}
 
+	game->stat_tile_img = mlx_xpm_file_to_image(game->mlx, "assets/black_tile.xpm", &width, &height);
+	if (!game->stat_tile_img)
+	{
+		write(2, "Error: Failed to load stat tile texture\n", 41);
+		exit(1);
+	}
+
 	game->player_img = mlx_xpm_file_to_image(game->mlx, "assets/player/goodsprite_idle.xpm", &width, &height);
 	if (!game->player_img)
 	{
@@ -106,6 +113,30 @@ void	init_textures(t_game *game)
 	printf("All textures loaded successfully\n");
 }
 
+void	render_ui_overlay(t_game *game)
+{
+	char	moves_str[50];
+	char	health_str[50];
+	char	fish_str[50];
+
+	sprintf(moves_str, "Moves: %d", game->moves);
+	sprintf(health_str, "Health: %d/%d", game->player_health, PLAYER_MAX_HEALTH);
+	mlx_string_put(game->mlx, game->win, 10, 20, 0xFFFFFF, moves_str);
+	if (game->player_health > 100)
+		mlx_string_put(game->mlx, game->win, 10, 40, 0x00FF00, health_str);
+	else if (game->player_health > 60)
+		mlx_string_put(game->mlx, game->win, 10, 40, 0xFFFF00, health_str);
+	else
+		mlx_string_put(game->mlx, game->win, 10, 40, 0xFF0000, health_str);
+	if (game->collectibles > 0)
+	{
+		sprintf(fish_str, "Fish: %d", game->collectibles);
+		mlx_string_put(game->mlx, game->win, 10, 60, 0x6BB6FF, fish_str);
+	}
+	else
+		mlx_string_put(game->mlx, game->win, 10, 60, 0x00FF00, "Find the exit!");
+}
+
 void	render_map(t_game *game)
 {
 	int	x;
@@ -121,6 +152,8 @@ void	render_map(t_game *game)
 		{
 			if (game->map[y][x] == '1')
 				mlx_put_image_to_window(game->mlx, game->win, game->wall_img, x * TILE_SIZE, y * TILE_SIZE);
+			else if (game->map[y][x] == 'S')
+				mlx_put_image_to_window(game->mlx, game->win, game->stat_tile_img, x * TILE_SIZE, y * TILE_SIZE);
 			else
 				mlx_put_image_to_window(game->mlx, game->win, game->floor_img, x * TILE_SIZE, y * TILE_SIZE);
 			
@@ -143,6 +176,7 @@ void	render_map(t_game *game)
 		}
 		y++;
 	}
+	render_ui_overlay(game);
 }
 
 int	handle_keypress(int keycode, t_game *game)
@@ -200,7 +234,7 @@ int	move_player(t_game *game, int new_x, int new_y)
 	if (new_x < 0 || new_x >= game->map_width || new_y < 0 || new_y >= game->map_height)
 		return (0);
 
-	if (game->map[new_y][new_x] == '1')
+	if (game->map[new_y][new_x] == '1' || game->map[new_y][new_x] == 'S')
 		return (0);
 
 	// Check if there's a living (non-dying) enemy at the destination
@@ -301,6 +335,8 @@ int	close_game(t_game *game)
 		mlx_destroy_image(game->mlx, game->wall_img);
 	if (game->floor_img)
 		mlx_destroy_image(game->mlx, game->floor_img);
+	if (game->stat_tile_img)
+		mlx_destroy_image(game->mlx, game->stat_tile_img);
 	if (game->player_img)
 		mlx_destroy_image(game->mlx, game->player_img);
 	if (game->collectible_img)
@@ -365,6 +401,8 @@ void	cleanup_level(t_game *game)
 		mlx_destroy_image(game->mlx, game->wall_img);
 	if (game->floor_img)
 		mlx_destroy_image(game->mlx, game->floor_img);
+	if (game->stat_tile_img)
+		mlx_destroy_image(game->mlx, game->stat_tile_img);
 	if (game->player_img)
 		mlx_destroy_image(game->mlx, game->player_img);
 	if (game->collectible_img)
@@ -380,6 +418,7 @@ void	cleanup_level(t_game *game)
 	
 	game->wall_img = NULL;
 	game->floor_img = NULL;
+	game->stat_tile_img = NULL;
 	game->player_img = NULL;
 	game->collectible_img = NULL;
 	game->exit_img = NULL;

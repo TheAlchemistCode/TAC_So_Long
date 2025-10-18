@@ -6,7 +6,7 @@
 /*   By: clyon <clyon@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 00:00:00 by clyon             #+#    #+#             */
-/*   Updated: 2025/10/18 16:34:17 by clyon            ###   ########.fr       */
+/*   Updated: 2025/10/18 17:36:45 by clyon            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,18 +103,26 @@ void	update_enemy_movement(t_game *game)
 
 int	is_valid_enemy_position(t_game *game, int x, int y)
 {
-	int	i;
+	int		i;
+	char	tile;
 	
 	// Check map boundaries
 	if (x < 0 || x >= game->map_width || y < 0 || y >= game->map_height)
 		return (0);
 	
-	// Check if position is a wall
-	if (game->map[y][x] == '1')
+	// Get the tile at target position
+	tile = game->map[y][x];
+	
+	// Enemies cannot move into:
+	// - Walls (1)
+	// - Stat tiles (S)
+	// - Exits (E)
+	// - Collectibles (C)
+	if (tile == '1' || tile == 'S' || tile == 'E' || tile == 'C')
 		return (0);
 	
-	// Check if position is exit (enemies shouldn't block exit)
-	if (game->map[y][x] == 'E')
+	// Check if position is player (enemies should attack, not move through)
+	if (x == game->player_x && y == game->player_y)
 		return (0);
 	
 	// Check collision with other enemies

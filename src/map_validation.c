@@ -90,13 +90,18 @@ static void	check_walls(t_game *game)
 {
     int	i;
     
-    // Check top and bottom walls
+    // Check top and bottom walls (allow 'S' stat tiles)
     i = 0;
     while (i < game->map_width)
     {
-        if (game->map[0][i] != '1' || game->map[game->map_height - 1][i] != '1')
+        if (game->map[0][i] != '1' && game->map[0][i] != 'S')
         {
-            printf("Error: Map is not enclosed by walls (top/bottom)!\n");
+            printf("Error: Map is not enclosed by walls (top row)!\n");
+            exit(1);
+        }
+        if (game->map[game->map_height - 1][i] != '1')
+        {
+            printf("Error: Map is not enclosed by walls (bottom row)!\n");
             exit(1);
         }
         i++;
@@ -106,9 +111,14 @@ static void	check_walls(t_game *game)
     i = 0;
     while (i < game->map_height)
     {
-        if (game->map[i][0] != '1' || game->map[i][game->map_width - 1] != '1')
+        if (game->map[i][0] != '1' && game->map[i][0] != 'S')
         {
-            printf("Error: Map is not enclosed by walls (left/right)!\n");
+            printf("Error: Map is not enclosed by walls (left side)!\n");
+            exit(1);
+        }
+        if (game->map[i][game->map_width - 1] != '1')
+        {
+            printf("Error: Map is not enclosed by walls (right side)!\n");
             exit(1);
         }
         i++;
@@ -121,8 +131,8 @@ static void	flood_fill(char **map_copy, int x, int y, int width, int height)
 	if (x < 0 || x >= width || y < 0 || y >= height)
 		return;
 		
-	// Check if already visited or is a wall
-	if (map_copy[y][x] == '1' || map_copy[y][x] == 'V')
+	// Check if already visited or is a wall or stat tile
+	if (map_copy[y][x] == '1' || map_copy[y][x] == 'S' || map_copy[y][x] == 'V')
 		return;
 		
 	// Mark as visited
