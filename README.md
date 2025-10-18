@@ -168,7 +168,7 @@ This project fulfills the **So Long** project requirements:
 - [x] Norm compliant
 
 ### Bonus Features ✅
-- [x] Enemy patrols with AI
+- [x] Enemy patrols
 - [x] Player loses on enemy contact
 - [x] On-screen HUD (health bar)
 - [x] Sprite animation
