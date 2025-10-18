@@ -19,29 +19,35 @@ This project demonstrates fundamental game development concepts including:
 - 2D graphics rendering with **MiniLibX**
 - Event handling (keyboard input)
 - Collision detection
-- Enemy AI with patrol patterns
+- Enemy sprites with patrol patterns
 - Real-time gameplay mechanics
 
 ---
 
 ## 🥷 Game Story
 
-**Dennis**, a legendary ninja warrior, has infiltrated enemy fortresses to retrieve stolen artifacts. Navigate through dangerous corridors filled with patrolling guards, collect all the treasures, and escape through the exit portal before your health runs out!
+**Dennis the Ninja menace** has made landfall on the shores of a Viking settlement! This crafty warrior has discovered that the fierce Viking women have stockpiled the finest fish in their coastal strongholds. With his insatiable appetite for adventure (and seafood), Dennis must infiltrate their fortified compounds, swiftly collect all the precious fish before the Viking warriors detect his presence, and escape through the ancient underground tunnel networks that connect the settlements.
+
+But beware! The Viking women are not mere fishmongers - they are battle-hardened defenders who patrol their territories with deadly precision. Dennis must use all his ninja skills to avoid their wrath, strike when necessary, and vanish into the shadows before reinforcements arrive. The underground tunnels offer his only hope of escape, but they will only open once he has claimed every last fish from their stores!
+
+Will Dennis successfully complete his fishy heist and disappear into the underground labyrinth, or will he become another cautionary tale whispered around Viking campfires? The fate of this ninja menace lies in your hands!
+
+*Navigate Dennis through Viking settlements, collect all the fish (C), avoid or defeat the patrolling Viking women (B), and escape through the underground tunnel exits (E) before your stealth runs out!*
 
 ---
 
 ## 🎯 Objectives
 
 ### Primary Goal
-**Collect all collectibles (C) and reach the exit (E) to complete the level**
+**Collect all fish (C) and reach the underground tunnel exit (E) to complete your heist**
 
 ### Win Condition
-✅ Collect **ALL** items in the level  
-✅ Navigate to the **exit portal**  
-✅ Survive enemy encounters  
+✅ Steal **ALL** fish from the Viking settlement  
+✅ Navigate to the **underground tunnel entrance**  
+✅ Survive encounters with Viking women defenders  
 
 ### Lose Condition
-❌ Health reaches **0 HP** from enemy attacks
+❌ Stealth/Health reaches **0 HP** from Viking attacks
 
 ---
 
@@ -90,12 +96,12 @@ This project demonstrates fundamental game development concepts including:
 
 | Symbol | Element | Description |
 |--------|---------|-------------|
-| **0** | Empty Space | Walkable floor |
-| **1** | Wall | Solid obstacle (blocks movement) |
-| **C** | Collectible | Items to collect (coins/artifacts) |
-| **E** | Exit | Portal to next level (opens after collecting all C) |
-| **P** | Player | Your ninja starting position |
-| **B** | Enemy | Patrolling guards (move every 2 seconds) |
+| **0** | Beach/Floor | Walkable sandy terrain |
+| **1** | Rock Wall | Solid coastal obstacles (blocks movement) |
+| **C** | Fish | Precious fish to steal from Viking stores |
+| **E** | Tunnel Exit | Underground escape route (opens after collecting all fish) |
+| **P** | Dennis | Your ninja menace starting position |
+| **B** | Viking Women | Fierce defenders patrolling their territory (move every 2 seconds) |
 
 ---
 
@@ -247,7 +253,7 @@ TAC_So_Long/
 │   ├── map_parse.c      # Map loading
 │   ├── map_validation.c # Map validation
 │   ├── combat/          # Combat system
-│   ├── enemy/           # Enemy AI
+│   ├── enemy/           # Enemy sprites
 │   ├── animation/       # Sprite animation
 │   └── utils/           # Utilities
 ├── maps/                # Level files (.ber)
