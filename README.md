@@ -114,26 +114,48 @@ This project demonstrates fundamental game development concepts including:
 git clone https://github.com/TheAlchemistCode/TAC_So_Long.git
 cd TAC_So_Long
 
-# Build the game
+# Build the game (compiles libft, minilibx, and main game)
 make
 
-# Run with a map
-./so_long maps/map_enemies.ber
+# Start with the recommended beginner map
+./so_long maps/map0.ber
 ```
 
-### Available Maps
+### Available Maps (Difficulty Progression)
 
 ```bash
-# Beginner - 2 enemies
-./so_long maps/map_enemies.ber
+# 🟢 BEGINNER - Start here! (2 enemies, small map)
+./so_long maps/map0.ber
 
-# Standard - Test map
+# 🟡 PRACTICE - No enemies (peaceful learning)
 ./so_long maps/map1.ber
 
-# Advanced - 4 enemies
-./so_long maps/map2.ber
+# 🟠 INTERMEDIATE - More enemies and complexity
+./so_long maps/map_enemies.ber
 
-# Custom maps supported (.ber format)
+# 🔴 ADVANCED - Multiple enemies, larger maps
+./so_long maps/map2.ber
+./so_long maps/map3.ber
+
+# 🔧 TESTING MAPS
+./so_long maps/test_block.ber     # Test collision detection
+./so_long maps/test_victory.ber   # Test win condition
+./so_long maps/invalid_map.ber    # Test error handling
+
+# 📝 Custom maps supported (.ber format)
+```
+
+### Quick Start Commands
+
+```bash
+# Full build and run sequence:
+make clean          # Clean previous builds
+make                # Build everything
+./so_long maps/map0.ber  # Start playing!
+
+# If you get compilation errors:
+make fclean         # Deep clean
+make                # Rebuild from scratch
 ```
 
 ---
