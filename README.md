@@ -238,7 +238,7 @@ TAC_So_Long/
 
 ## 🎖️ Credits
 
-**Developer**: TheAlchemistCode (42 Student)  
+**Developer**: TheAlchemistCode (42 Student - CLYON)  
 **Project**: So Long (42 School)  
 **Graphics Library**: MiniLibX  
 **Inspiration**: The Hitchhiker's Guide to the Galaxy by Douglas Adams  
