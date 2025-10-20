@@ -43,12 +43,13 @@ static void	setup_new_window(t_game *game)
 static void	setup_new_level(t_game *game, char *map_path)
 {
 	parse_map(map_path, game);
-	validate_map(game);
+	validate_map(game, map_path);
 	if (game->map[game->player_y][game->player_x] != 'P')
 		game->map[game->player_y][game->player_x] = 'P';
 	setup_new_window(game);
 	init_textures(game);
 	init_enemies(game);
+	printf("\n⏱️ Time limit: %d seconds\n", MAP_TIME_LIMIT);
 }
 
 static void	register_handlers(t_game *game)
@@ -64,4 +65,8 @@ void	init_next_level(t_game *game, char *map_path)
 	register_handlers(game);
 	render_map(game);
 	render_enemies(game);
+	game->map_start_time_ms = get_time_ms();
+	game->time_remaining = MAP_TIME_LIMIT;
+	game->last_printed_time = MAP_TIME_LIMIT;
+	printf("⏱️ Time remaining: %d seconds\n\n", MAP_TIME_LIMIT);
 }

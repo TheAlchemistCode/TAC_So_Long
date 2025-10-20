@@ -14,9 +14,10 @@
 #include <stdio.h>
 
 static void	render_ui_text(t_game *game, char *moves, char *health,
-	char *fish)
+	char *fish, char *timer)
 {
 	int	health_color;
+	int	timer_color;
 
 	mlx_string_put(game->mlx, game->win, 10, 20, 0xFFFFFF, moves);
 	if (game->player_health > 100)
@@ -31,6 +32,13 @@ static void	render_ui_text(t_game *game, char *moves, char *health,
 	else
 		mlx_string_put(game->mlx, game->win, 10, 60, 0x00FF00,
 			"Find the exit!");
+	if (game->time_remaining > 5)
+		timer_color = 0x00FF00;
+	else if (game->time_remaining > 0)
+		timer_color = 0xFF6600;
+	else
+		timer_color = 0xFF0000;
+	mlx_string_put(game->mlx, game->win, 10, 80, timer_color, timer);
 }
 
 void	render_ui_overlay(t_game *game)
@@ -38,12 +46,14 @@ void	render_ui_overlay(t_game *game)
 	char	moves_str[50];
 	char	health_str[50];
 	char	fish_str[50];
+	char	timer_str[50];
 
 	sprintf(moves_str, "Moves: %d", game->moves);
 	sprintf(health_str, "Health: %d/%d", game->player_health,
 		PLAYER_MAX_HEALTH);
 	sprintf(fish_str, "Fish: %d", game->collectibles);
-	render_ui_text(game, moves_str, health_str, fish_str);
+	sprintf(timer_str, "Time: %d", game->time_remaining);
+	render_ui_text(game, moves_str, health_str, fish_str, timer_str);
 }
 
 static void	render_map_tiles(t_game *game, int x, int y)

@@ -15,236 +15,85 @@
 #include <stdlib.h>
 #include <time.h>
 
+static void	process_enemy_state(t_enemy *enemy, unsigned long current_time)
+{
+	if (enemy->is_dying)
+	{
+		if (current_time - enemy->death_start_ms >= DEATH_ANIM_DURATION_MS)
+		{
+			enemy->alive = 0;
+			printf("Enemy death animation complete\n");
+		}
+	}
+	else
+		update_enemy_animation(enemy, current_time);
+}
+
 void	update_enemies(t_game *game)
 {
 	unsigned long	current_time;
 	int				i;
 
 	if (!game->enemies)
-		return;
-	
+		return ;
 	current_time = get_time_ms();
 	i = 0;
-	
 	while (i < game->enemy_count)
 	{
 		if (game->enemies[i].alive)
-		{
-			// Check if death animation should end
-			if (game->enemies[i].is_dying)
-			{
-				if (current_time - game->enemies[i].death_start_ms >= DEATH_ANIM_DURATION_MS)
-				{
-					game->enemies[i].alive = 0;
-					printf("Enemy death animation complete - enemy removed\n");
-				}
-			}
-			else
-			{
-				// Update animation state only for living enemies
-				update_enemy_animation(&game->enemies[i], current_time);
-			}
-		}
+			process_enemy_state(&game->enemies[i], current_time);
 		i++;
 	}
-	
-	// Update enemy movement (1 tile every 2 seconds)
 	update_enemy_movement(game);
-	
-	// Check if enemies should attack player
 	check_enemy_attacks(game);
+}
+
+static void	process_enemy_movement(t_game *game, t_enemy *enemy, int index)
+{
+	unsigned long	current_time;
+	t_position		pos;
+
+	current_time = get_time_ms();
+	if (current_time - enemy->last_move_time >= ENEMY_MOVE_DELAY_MS)
+	{
+		pos.x = enemy->x;
+		pos.y = enemy->y;
+		calculate_next_position(game, enemy, 1, &pos);
+		if (is_valid_enemy_position(game, pos.x, pos.y))
+		{
+			enemy->x = pos.x;
+			enemy->y = pos.y;
+			printf("Enemy %d moved to (%d, %d)\n", index, pos.x, pos.y);
+		}
+		enemy->last_move_time = current_time;
+	}
 }
 
 void	update_enemy_movement(t_game *game)
 {
-	unsigned long	current_time;
-	int				i;
-	int				distance;
-	int				new_x;
-	int				new_y;
+	int	i;
 
 	if (!game->enemies)
-		return;
-	
-	current_time = get_time_ms();
+		return ;
 	i = 0;
-	
 	while (i < game->enemy_count)
 	{
-		if (game->enemies[i].alive && !game->enemies[i].is_dying && 
-			!game->enemies[i].is_attacking)
-		{
-			// Check if 2 seconds have passed since last move
-			if (current_time - game->enemies[i].last_move_time >= ENEMY_MOVE_DELAY_MS)
-			{
-				// Move exactly 1 tile per movement
-				distance = 1;
-				
-				// Calculate new position based on pattern
-				new_x = game->enemies[i].x;
-				new_y = game->enemies[i].y;
-				calculate_next_position(game, &game->enemies[i], distance, &new_x, &new_y);
-				
-				// Validate and apply movement
-				if (is_valid_enemy_position(game, new_x, new_y))
-				{
-					game->enemies[i].x = new_x;
-					game->enemies[i].y = new_y;
-					printf("Enemy %d moved to (%d, %d) - distance: %d\n", 
-						i, new_x, new_y, distance);
-				}
-				
-				game->enemies[i].last_move_time = current_time;
-			}
-		}
+		if (game->enemies[i].alive && !game->enemies[i].is_dying
+			&& !game->enemies[i].is_attacking)
+			process_enemy_movement(game, &game->enemies[i], i);
 		i++;
 	}
 }
 
-int	is_valid_enemy_position(t_game *game, int x, int y)
+void	calculate_next_position(t_game *game, t_enemy *enemy,
+	int distance, t_position *pos)
 {
-	int		i;
-	char	tile;
-	
-	// Check map boundaries
-	if (x < 0 || x >= game->map_width || y < 0 || y >= game->map_height)
-		return (0);
-	
-	// Get the tile at target position
-	tile = game->map[y][x];
-	
-	// Enemies cannot move into:
-	// - Walls (1)
-	// - Stat tiles (S)
-	// - Exits (E)
-	// - Collectibles (C)
-	if (tile == '1' || tile == 'S' || tile == 'E' || tile == 'C')
-		return (0);
-	
-	// Check if position is player (enemies should attack, not move through)
-	if (x == game->player_x && y == game->player_y)
-		return (0);
-	
-	// Check collision with other enemies
-	i = 0;
-	while (i < game->enemy_count)
-	{
-		if (game->enemies[i].alive && !game->enemies[i].is_dying)
-		{
-			if (game->enemies[i].x == x && game->enemies[i].y == y)
-				return (0);
-		}
-		i++;
-	}
-	
-	return (1);
-}
-
-void	calculate_next_position(t_game *game, t_enemy *enemy, 
-								int distance, int *new_x, int *new_y)
-{
-	int	step;
-	int	dx;
-	int	dy;
-	
-	*new_x = enemy->x;
-	*new_y = enemy->y;
-	
+	pos->x = enemy->x;
+	pos->y = enemy->y;
 	if (enemy->pattern == PATROL_HORIZONTAL)
-	{
-		// Horizontal patrol (left-right)
-		if (enemy->direction == 1 || enemy->direction == 0)  // Moving right
-		{
-			step = 0;
-			while (step < distance)
-			{
-				if (*new_x + 1 >= enemy->start_x + enemy->patrol_length || 
-					!is_valid_enemy_position(game, *new_x + 1, *new_y))
-				{
-					enemy->direction = 3;  // Switch to left
-					break;
-				}
-				(*new_x)++;
-				step++;
-			}
-		}
-		else  // Moving left
-		{
-			step = 0;
-			while (step < distance)
-			{
-				if (*new_x - 1 <= enemy->start_x - enemy->patrol_length || 
-					!is_valid_enemy_position(game, *new_x - 1, *new_y))
-				{
-					enemy->direction = 1;  // Switch to right
-					break;
-				}
-				(*new_x)--;
-				step++;
-			}
-		}
-	}
+		patrol_horizontal(game, enemy, distance, pos);
 	else if (enemy->pattern == PATROL_VERTICAL)
-	{
-		// Vertical patrol (up-down)
-		if (enemy->direction == 2 || enemy->direction == 1)  // Moving down
-		{
-			step = 0;
-			while (step < distance)
-			{
-				if (*new_y + 1 >= enemy->start_y + enemy->patrol_length || 
-					!is_valid_enemy_position(game, *new_x, *new_y + 1))
-				{
-					enemy->direction = 0;  // Switch to up
-					break;
-				}
-				(*new_y)++;
-				step++;
-			}
-		}
-		else  // Moving up
-		{
-			step = 0;
-			while (step < distance)
-			{
-				if (*new_y - 1 <= enemy->start_y - enemy->patrol_length || 
-					!is_valid_enemy_position(game, *new_x, *new_y - 1))
-				{
-					enemy->direction = 2;  // Switch to down
-					break;
-				}
-				(*new_y)--;
-				step++;
-			}
-		}
-	}
-	else  // PATROL_RANDOM
-	{
-		// Random movement - try a random direction
-		dx = 0;
-		dy = 0;
-		
-		if (enemy->direction == 0)
-			dy = -1;  // Up
-		else if (enemy->direction == 1)
-			dx = 1;   // Right
-		else if (enemy->direction == 2)
-			dy = 1;   // Down
-		else
-			dx = -1;  // Left
-		
-		step = 0;
-		while (step < distance)
-		{
-			if (!is_valid_enemy_position(game, *new_x + dx, *new_y + dy))
-			{
-				// Hit obstacle, try new random direction
-				enemy->direction = rand() % 4;
-				break;
-			}
-			*new_x += dx;
-			*new_y += dy;
-			step++;
-		}
-	}
+		patrol_vertical(game, enemy, distance, pos);
+	else
+		random_movement(game, enemy, distance, pos);
 }

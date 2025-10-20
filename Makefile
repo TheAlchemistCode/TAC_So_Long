@@ -18,6 +18,8 @@ SRC_FILES := main.c map_parse.c map_validation.c \
 			 graphics/level_setup.c \
 			 combat/attack_system.c \
 			 enemy/enemy_init.c enemy/enemy_update.c enemy/enemy_render.c \
+			 enemy/enemy_movement_patrol.c enemy/enemy_movement_direction.c \
+			 enemy/enemy_validation.c enemy/enemy_cleanup.c \
 			 animation/animation_system.c \
 			 utils/timer.c
 SRC := $(addprefix src/, $(SRC_FILES))
@@ -43,6 +45,7 @@ $(LIBFT_LIB):
 clean:
 	rm -f $(OBJ)
 	rm -f src/graphics.o
+	rm -f src/enemy/enemy_movement_helpers.o
 	$(MAKE) -C $(LIBFT_DIR) clean
 
 fclean: clean

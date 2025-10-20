@@ -17,77 +17,58 @@
 #include <stdlib.h>
 #include <time.h>
 
-int main(int argc, char **argv)
+int	main(int argc, char **argv)
 {
 	t_game	game;
 
-	// Initialize game structure to zero
 	ft_bzero(&game, sizeof(t_game));
-	
-	// Seed random number generator for wall randomization
 	srand(time(NULL));
-
 	if (argc != 2)
 	{
-		write(2, "Error: Invalid number of arguments\n", 35);
+		write(2, "Error: Invalid number of arguments\n", 36);
 		return (1);
 	}
-	
 	printf("=== SO LONG - GRAPHICS DEMO ===\n");
-	
-	// Step 1: Parse and validate map
 	printf("1. Parsing map: %s\n", argv[1]);
 	parse_map(argv[1], &game);
-	validate_map(&game);
-	game.moves = 0;  // Initialize movement counter
-	game.victory = 0;  // Initialize victory flag
-	game.player_health = PLAYER_MAX_HEALTH;  // Initialize player health
-	game.player_last_attack_ms = 0;  // Initialize attack cooldown
-	game.player_idle_frame = 0;  // Start with first idle frame
-	game.player_idle_frame_start_ms = get_time_ms();  // Initialize idle timer
-	game.player_last_action_ms = get_time_ms();  // Initialize action timer
-	
-	// Determine current map number from filename
+	validate_map(&game, argv[1]);
+	game.moves = 0;
+	game.victory = 0;
+	game.player_health = PLAYER_MAX_HEALTH;
+	game.player_last_attack_ms = 0;
+	game.player_idle_frame = 0;
+	game.player_idle_frame_start_ms = get_time_ms();
+	game.player_last_action_ms = get_time_ms();
+	game.map_start_time_ms = get_time_ms();
+	game.time_remaining = MAP_TIME_LIMIT;
+	game.last_printed_time = MAP_TIME_LIMIT;
+	game.game_ended = 0;
 	if (strstr(argv[1], "map1.ber"))
 		game.current_map = 1;
 	else if (strstr(argv[1], "map2.ber"))
 		game.current_map = 2;
 	else
-		game.current_map = 1; // Default to map 1
-	
+		game.current_map = 1;
 	printf("✓ Map loaded: %dx%d tiles\n", game.map_width, game.map_height);
-	
-	// Step 2: Initialize graphics
 	printf("2. Initializing graphics...\n");
 	init_graphics(&game);
-	
-	// Step 3: Load textures
 	printf("3. Loading textures...\n");
 	init_textures(&game);
-	
-	// Step 4: Initialize enemies
 	printf("4. Initializing enemies...\n");
 	init_enemies(&game);
-	
-	// Step 5: Render the map
+	printf("\n⏱️ Time limit: %d seconds\n", MAP_TIME_LIMIT);
+	printf("⏱️ Time remaining: %d seconds\n\n", MAP_TIME_LIMIT);
 	printf("5. Rendering initial map...\n");
 	render_map(&game);
 	render_enemies(&game);
-	
-	// Step 6: Set up event handlers
 	printf("6. Setting up event handlers...\n");
 	set_game_pointer(&game);
-	mlx_hook(game.win, 17, 1L<<17, close_wrapper, &game);          // Window close button
-	mlx_hook(game.win, 2, 1L<<0, key_press_handler, &game);        // KeyPress events
-	
-	// Step 7: Set up game loop hook for continuous updates
+	mlx_hook(game.win, 17, 1L << 17, close_wrapper, &game);
+	mlx_hook(game.win, 2, 1L << 0, key_press_handler, &game);
 	mlx_loop_hook(game.mlx, game_loop, &game);
-	
-	// Step 8: Start the game loop
 	printf("7. Starting game loop... (Press ESC to quit, SPACE to attack)\n");
 	printf("Player Health: %d/%d\n", game.player_health, PLAYER_MAX_HEALTH);
 	printf("====================================\n");
 	mlx_loop(game.mlx);
-	
 	return (0);
 }

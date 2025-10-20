@@ -33,6 +33,14 @@
 # define ENEMY_MOVE_DELAY_MS 2000
 # define ENEMY_MIN_TILES 2
 # define ENEMY_MAX_TILES 3
+# define MAP_TIME_LIMIT 15
+
+// Position structure
+typedef struct s_position
+{
+	int	x;
+	int	y;
+}	t_position;
 
 // Movement patterns for enemies
 typedef enum e_movement_pattern
@@ -107,11 +115,17 @@ typedef struct s_game
 	// Enemy system
 	t_enemy	*enemies;
 	int		enemy_count;
+	// Timer system
+	unsigned long	map_start_time_ms;
+	int				time_remaining;
+	int				last_printed_time;
+	// Game state
+	int				game_ended;
 }	t_game;
 
 // Function prototypes
 void	parse_map(char *filename, t_game *game);
-void	validate_map(t_game *game);
+void	validate_map(t_game *game, char *filename);
 void	validate_path(t_game *game);
 // Graphics functions
 void	init_graphics(t_game *game);
@@ -141,7 +155,22 @@ void	enemy_attack_player(t_game *game, t_enemy *enemy);
 void	free_enemies(t_game *game);
 void	update_enemy_movement(t_game *game);
 int		is_valid_enemy_position(t_game *game, int x, int y);
-void	calculate_next_position(t_game *game, t_enemy *enemy, int distance, int *new_x, int *new_y);
+void	calculate_next_position(t_game *game, t_enemy *enemy,
+	int distance, t_position *pos);
+void	move_right(t_game *game, t_enemy *enemy,
+	int distance, t_position *pos);
+void	move_left(t_game *game, t_enemy *enemy,
+	int distance, t_position *pos);
+void	move_down(t_game *game, t_enemy *enemy,
+	int distance, t_position *pos);
+void	move_up(t_game *game, t_enemy *enemy,
+	int distance, t_position *pos);
+void	patrol_horizontal(t_game *game, t_enemy *enemy,
+	int distance, t_position *pos);
+void	patrol_vertical(t_game *game, t_enemy *enemy,
+	int distance, t_position *pos);
+void	random_movement(t_game *game, t_enemy *enemy,
+	int distance, t_position *pos);
 
 // Combat functions
 int		is_adjacent(int x1, int y1, int x2, int y2);
@@ -155,5 +184,6 @@ void	load_enemy_textures(t_game *game, t_enemy *enemy);
 
 // Utility functions
 unsigned long	get_time_ms(void);
+int				update_map_timer(t_game *game);
 
 #endif

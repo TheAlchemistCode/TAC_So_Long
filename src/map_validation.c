@@ -19,13 +19,13 @@ static void	check_components(t_game *game);
 static void	check_walls(t_game *game);
 static void	check_shape(t_game *game);
 
-void	validate_map(t_game *game)
+void	validate_map(t_game *game, char *filename)
 {
 	check_components(game);
 	check_shape(game);
 	check_walls(game);
 	validate_path(game);
-	printf("Map validation successful!\n");
+	printf("Map validation successful! Loaded: %s\n", filename);
 }static void	check_components(t_game *game)
 {
     int	p_count;

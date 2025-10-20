@@ -11,6 +11,8 @@
 /* ************************************************************************** */
 
 #include "../../include/so_long.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 static void	*handle_attack_animation(t_game *game, unsigned long now)
 {
@@ -104,5 +106,12 @@ void	update_player_animation(t_game *game)
 int	game_loop(t_game *game)
 {
 	update_player_animation(game);
+	if (!update_map_timer(game))
+	{
+		printf("\n💀 GAME OVER! Time expired!\n");
+		printf("Final score: %d moves\n", game->moves);
+		close_game(game);
+		exit(0);
+	}
 	return (0);
 }
