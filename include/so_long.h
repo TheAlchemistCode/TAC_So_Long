@@ -42,6 +42,14 @@ typedef struct s_position
 	int	y;
 }	t_position;
 
+// Flood fill data structure
+typedef struct s_flood_data
+{
+	char	**map;
+	int		width;
+	int		height;
+}	t_flood_data;
+
 // Movement patterns for enemies
 typedef enum e_movement_pattern
 {
@@ -127,6 +135,15 @@ typedef struct s_game
 void	parse_map(char *filename, t_game *game);
 void	validate_map(t_game *game, char *filename);
 void	validate_path(t_game *game);
+
+// Map validation functions (validation/)
+void	check_map_components(t_game *game);
+void	check_map_structure(t_game *game);
+void	validate_path_connectivity(t_game *game);
+void	flood_fill_map(t_flood_data *data, int x, int y);
+void	free_map_copy(char **map_copy, int height);
+void	verify_reachability(t_game *game, int c_reach, int e_reach);
+
 // Graphics functions
 void	init_graphics(t_game *game);
 void	init_textures(t_game *game);
@@ -177,6 +194,9 @@ int		is_adjacent(int x1, int y1, int x2, int y2);
 void	player_attack(t_game *game);
 void	check_enemy_attacks(t_game *game);
 int		has_living_enemy_at(t_game *game, int x, int y);
+void	update_attack_state(t_game *game, int dx);
+void	process_player_hit(t_game *game, int enemy_idx);
+void	process_enemy_attack(t_game *game, int enemy_idx);
 
 // Animation functions
 void	update_enemy_animation(t_enemy *enemy, unsigned long current_time);

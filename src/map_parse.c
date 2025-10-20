@@ -49,10 +49,12 @@ static int	get_height(char *filename)
 	if (fd < 0)
 		return (0);
 	height = 0;
-	while ((line = get_next_line(fd)) != NULL)
+	line = get_next_line(fd);
+	while (line != NULL)
 	{
 		height++;
 		free(line);
+		line = get_next_line(fd);
 	}
 	close(fd);
 	return (height);
@@ -83,4 +85,3 @@ void	parse_map(char *filename, t_game *game)
 	game->map[i] = NULL;
 	close(fd);
 }
-

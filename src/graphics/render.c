@@ -13,22 +13,21 @@
 #include "../../include/so_long.h"
 #include <stdio.h>
 
-static void	render_ui_text(t_game *game, char *moves, char *health,
-	char *fish, char *timer)
+static void	render_ui_text(t_game *game, char **ui_strings)
 {
 	int	health_color;
 	int	timer_color;
 
-	mlx_string_put(game->mlx, game->win, 10, 20, 0xFFFFFF, moves);
+	mlx_string_put(game->mlx, game->win, 10, 20, 0xFFFFFF, ui_strings[0]);
 	if (game->player_health > 100)
 		health_color = 0x00FF00;
 	else if (game->player_health > 60)
 		health_color = 0xFFFF00;
 	else
 		health_color = 0xFF0000;
-	mlx_string_put(game->mlx, game->win, 10, 40, health_color, health);
+	mlx_string_put(game->mlx, game->win, 10, 40, health_color, ui_strings[1]);
 	if (game->collectibles > 0)
-		mlx_string_put(game->mlx, game->win, 10, 60, 0x6BB6FF, fish);
+		mlx_string_put(game->mlx, game->win, 10, 60, 0x6BB6FF, ui_strings[2]);
 	else
 		mlx_string_put(game->mlx, game->win, 10, 60, 0x00FF00,
 			"Find the exit!");
@@ -38,7 +37,7 @@ static void	render_ui_text(t_game *game, char *moves, char *health,
 		timer_color = 0xFF6600;
 	else
 		timer_color = 0xFF0000;
-	mlx_string_put(game->mlx, game->win, 10, 80, timer_color, timer);
+	mlx_string_put(game->mlx, game->win, 10, 80, timer_color, ui_strings[3]);
 }
 
 void	render_ui_overlay(t_game *game)
@@ -47,13 +46,18 @@ void	render_ui_overlay(t_game *game)
 	char	health_str[50];
 	char	fish_str[50];
 	char	timer_str[50];
+	char	*ui_strings[4];
 
 	sprintf(moves_str, "Moves: %d", game->moves);
 	sprintf(health_str, "Health: %d/%d", game->player_health,
 		PLAYER_MAX_HEALTH);
 	sprintf(fish_str, "Fish: %d", game->collectibles);
 	sprintf(timer_str, "Time: %d", game->time_remaining);
-	render_ui_text(game, moves_str, health_str, fish_str, timer_str);
+	ui_strings[0] = moves_str;
+	ui_strings[1] = health_str;
+	ui_strings[2] = fish_str;
+	ui_strings[3] = timer_str;
+	render_ui_text(game, ui_strings);
 }
 
 static void	render_map_tiles(t_game *game, int x, int y)
