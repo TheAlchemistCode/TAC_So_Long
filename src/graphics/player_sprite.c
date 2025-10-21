@@ -63,8 +63,8 @@ static void	*get_idle_sprite(t_game *game, unsigned long now)
 
 void	*get_player_sprite(t_game *game)
 {
-	unsigned long	now;
-	void			*sprite;
+	int		now;
+	void	*sprite;
 
 	now = get_time_ms();
 	if (game->player_is_attacking)
@@ -78,8 +78,8 @@ void	*get_player_sprite(t_game *game)
 
 void	update_player_animation(t_game *game)
 {
-	unsigned long			now;
-	static unsigned long	last_render = 0;
+	int			now;
+	static int	last_render = 0;
 
 	now = get_time_ms();
 	if (game->player_is_attacking)
@@ -106,6 +106,7 @@ void	update_player_animation(t_game *game)
 int	game_loop(t_game *game)
 {
 	update_player_animation(game);
+	update_enemies(game);
 	if (!update_map_timer(game))
 	{
 		printf("\n💀 GAME OVER! Time expired!\n");

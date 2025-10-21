@@ -15,7 +15,7 @@
 
 void	update_attack_state(t_game *game, int dx)
 {
-	unsigned long	current_time;
+	int	current_time;
 
 	current_time = get_time_ms();
 	game->player_is_attacking = 1;
@@ -34,7 +34,7 @@ void	update_attack_state(t_game *game, int dx)
 
 void	process_player_hit(t_game *game, int enemy_idx)
 {
-	unsigned long	current_time;
+	int	current_time;
 
 	current_time = get_time_ms();
 	game->enemies[enemy_idx].health -= PLAYER_ATTACK_DAMAGE;
@@ -46,14 +46,14 @@ void	process_player_hit(t_game *game, int enemy_idx)
 		if (game->map[game->enemies[enemy_idx].y]
 			[game->enemies[enemy_idx].x] == 'B')
 			game->map[game->enemies[enemy_idx].y]
-				[game->enemies[enemy_idx].x] = '0';
+			[game->enemies[enemy_idx].x] = '0';
 		printf("💀 Enemy defeated! Playing death animation...\n");
 	}
 }
 
 void	process_enemy_attack(t_game *game, int enemy_idx)
 {
-	unsigned long	current_time;
+	int	current_time;
 
 	current_time = get_time_ms();
 	game->player_health -= ENEMY_ATTACK_DAMAGE;

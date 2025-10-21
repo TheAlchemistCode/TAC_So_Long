@@ -13,22 +13,23 @@
 #include "../../include/so_long.h"
 #include <stdio.h>
 
-void	update_enemy_animation(t_enemy *enemy, unsigned long current_time)
+void	update_enemy_animation(t_enemy *enemy, int current_time)
 {
-	unsigned long	elapsed;
+	int	elapsed;
 
 	if (!enemy->is_attacking)
 		return ;
 	elapsed = current_time - enemy->attack_anim_start_ms;
-	if (elapsed < ATTACK_ANIM_DURATION_MS / 2)
-		enemy->attack_frame_index = 0;
-	else if (elapsed < ATTACK_ANIM_DURATION_MS)
-		enemy->attack_frame_index = 1;
-	else
+	if (elapsed >= ATTACK_ANIM_DURATION_MS)
 	{
 		enemy->is_attacking = 0;
 		enemy->attack_frame_index = 0;
+		return ;
 	}
+	if (elapsed < ATTACK_ANIM_DURATION_MS / 2)
+		enemy->attack_frame_index = 0;
+	else
+		enemy->attack_frame_index = 1;
 }
 
 void	load_enemy_textures(t_game *game, t_enemy *enemy)

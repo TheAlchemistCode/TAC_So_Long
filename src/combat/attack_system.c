@@ -26,9 +26,9 @@ int	is_adjacent(int x1, int y1, int x2, int y2)
 
 void	player_attack(t_game *game)
 {
-	unsigned long	current_time;
-	int				i;
-	int				dx;
+	int	current_time;
+	int	i;
+	int	dx;
 
 	current_time = get_time_ms();
 	if (game->player_is_attacking)
@@ -54,8 +54,8 @@ void	player_attack(t_game *game)
 
 void	check_enemy_attacks(t_game *game)
 {
-	unsigned long	current_time;
-	int				i;
+	int	current_time;
+	int	i;
 
 	current_time = get_time_ms();
 	i = 0;
@@ -66,7 +66,7 @@ void	check_enemy_attacks(t_game *game)
 				game->enemies[i].x, game->enemies[i].y))
 		{
 			if (current_time - game->enemies[i].last_attack_time_ms
-				>= ATTACK_COOLDOWN_MS)
+				>= ENEMY_ATTACK_COOLDOWN_MS)
 				process_enemy_attack(game, i);
 		}
 		i++;

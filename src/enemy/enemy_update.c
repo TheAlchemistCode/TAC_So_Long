@@ -15,7 +15,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-static void	process_enemy_state(t_enemy *enemy, unsigned long current_time)
+static void	process_enemy_state(t_enemy *enemy, int current_time)
 {
 	if (enemy->is_dying)
 	{
@@ -31,8 +31,8 @@ static void	process_enemy_state(t_enemy *enemy, unsigned long current_time)
 
 void	update_enemies(t_game *game)
 {
-	unsigned long	current_time;
-	int				i;
+	int	current_time;
+	int	i;
 
 	if (!game->enemies)
 		return ;
@@ -50,8 +50,8 @@ void	update_enemies(t_game *game)
 
 static void	process_enemy_movement(t_game *game, t_enemy *enemy, int index)
 {
-	unsigned long	current_time;
-	t_position		pos;
+	int			current_time;
+	t_position	pos;
 
 	current_time = get_time_ms();
 	if (current_time - enemy->last_move_time >= ENEMY_MOVE_DELAY_MS)
