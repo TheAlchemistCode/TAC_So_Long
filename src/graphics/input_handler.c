@@ -12,16 +12,12 @@
 
 #include "../../include/so_long.h"
 
-static t_game	*g_game = NULL;
-
-void	set_game_pointer(t_game *game)
+int	close_wrapper(void *param)
 {
-	g_game = game;
-}
+	t_game	*game;
 
-int	close_wrapper(void)
-{
-	return (close_game(g_game));
+	game = (t_game *)param;
+	return (close_game(game));
 }
 
 static void	handle_movement(int keycode, t_game *game)

@@ -17,6 +17,42 @@
 #include <stdlib.h>
 #include <time.h>
 
+static void	init_game_state(t_game *game)
+{
+	game->moves = 0;
+	game->victory = 0;
+	game->player_health = PLAYER_MAX_HEALTH;
+	game->player_last_attack_ms = 0;
+	game->player_idle_frame = 0;
+	game->player_idle_frame_start_ms = get_time_ms();
+	game->player_last_action_ms = get_time_ms();
+	game->map_start_time_ms = get_time_ms();
+	game->time_remaining = MAP_TIME_LIMIT;
+	game->last_printed_time = MAP_TIME_LIMIT;
+	game->game_ended = 0;
+}
+
+static void	set_initial_level(char *map_file, t_game *game)
+{
+	int	map_number;
+
+	if (sscanf(map_file, "maps/map%d.ber", &map_number) == 1)
+		game->current_map = map_number;
+	else if (strstr(map_file, "map1.ber"))
+		game->current_map = 1;
+	else if (strstr(map_file, "map2.ber"))
+		game->current_map = 2;
+	else
+		game->current_map = 1;
+}
+
+static void	setup_hooks(t_game *game)
+{
+	mlx_hook(game->win, 17, 1L << 17, close_wrapper, game);
+	mlx_hook(game->win, 2, 1L << 0, key_press_handler, game);
+	mlx_loop_hook(game->mlx, game_loop, game);
+}
+
 int	main(int argc, char **argv)
 {
 	t_game	game;
@@ -28,47 +64,16 @@ int	main(int argc, char **argv)
 		write(2, "Error: Invalid number of arguments\n", 36);
 		return (1);
 	}
-	printf("=== SO LONG - GRAPHICS DEMO ===\n");
-	printf("1. Parsing map: %s\n", argv[1]);
 	parse_map(argv[1], &game);
 	validate_map(&game, argv[1]);
-	game.moves = 0;
-	game.victory = 0;
-	game.player_health = PLAYER_MAX_HEALTH;
-	game.player_last_attack_ms = 0;
-	game.player_idle_frame = 0;
-	game.player_idle_frame_start_ms = get_time_ms();
-	game.player_last_action_ms = get_time_ms();
-	game.map_start_time_ms = get_time_ms();
-	game.time_remaining = MAP_TIME_LIMIT;
-	game.last_printed_time = MAP_TIME_LIMIT;
-	game.game_ended = 0;
-	if (strstr(argv[1], "map1.ber"))
-		game.current_map = 1;
-	else if (strstr(argv[1], "map2.ber"))
-		game.current_map = 2;
-	else
-		game.current_map = 1;
-	printf("✓ Map loaded: %dx%d tiles\n", game.map_width, game.map_height);
-	printf("2. Initializing graphics...\n");
+	init_game_state(&game);
+	set_initial_level(argv[1], &game);
 	init_graphics(&game);
-	printf("3. Loading textures...\n");
 	init_textures(&game);
-	printf("4. Initializing enemies...\n");
 	init_enemies(&game);
-	printf("\n⏱️ Time limit: %d seconds\n", MAP_TIME_LIMIT);
-	printf("⏱️ Time remaining: %d seconds\n\n", MAP_TIME_LIMIT);
-	printf("5. Rendering initial map...\n");
 	render_map(&game);
 	render_enemies(&game);
-	printf("6. Setting up event handlers...\n");
-	set_game_pointer(&game);
-	mlx_hook(game.win, 17, 1L << 17, close_wrapper, &game);
-	mlx_hook(game.win, 2, 1L << 0, key_press_handler, &game);
-	mlx_loop_hook(game.mlx, game_loop, &game);
-	printf("7. Starting game loop... (Press ESC to quit, SPACE to attack)\n");
-	printf("Player Health: %d/%d\n", game.player_health, PLAYER_MAX_HEALTH);
-	printf("====================================\n");
+	setup_hooks(&game);
 	mlx_loop(game.mlx);
 	return (0);
 }
