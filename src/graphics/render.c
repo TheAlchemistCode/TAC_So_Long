@@ -65,9 +65,6 @@ static void	render_map_tiles(t_game *game, int x, int y)
 	if (game->map[y][x] == '1')
 		mlx_put_image_to_window(game->mlx, game->win, game->wall_img,
 			x * TILE_SIZE, y * TILE_SIZE);
-	else if (game->map[y][x] == 'S')
-		mlx_put_image_to_window(game->mlx, game->win, game->stat_tile_img,
-			x * TILE_SIZE, y * TILE_SIZE);
 	else
 		mlx_put_image_to_window(game->mlx, game->win, game->floor_img,
 			x * TILE_SIZE, y * TILE_SIZE);
