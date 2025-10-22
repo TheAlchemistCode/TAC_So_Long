@@ -18,21 +18,21 @@ static void	render_ui_text(t_game *game, char **ui_strings)
 	int	health_color;
 	int	timer_color;
 
-	mlx_string_put(game->mlx, game->win, 10, 20, 0xFFFFFF, ui_strings[0]);
+	mlx_string_put(game->mlx, game->win, 10, 20, 0xFF8800, ui_strings[0]);
 	if (game->player_health > 100)
-		health_color = 0x00FF00;
+		health_color = 0xFF8800;
 	else if (game->player_health > 60)
-		health_color = 0xFFFF00;
+		health_color = 0xFF8800;
 	else
 		health_color = 0xFF0000;
 	mlx_string_put(game->mlx, game->win, 10, 40, health_color, ui_strings[1]);
 	if (game->collectibles > 0)
-		mlx_string_put(game->mlx, game->win, 10, 60, 0x6BB6FF, ui_strings[2]);
+		mlx_string_put(game->mlx, game->win, 10, 60, 0xFF8800, ui_strings[2]);
 	else
-		mlx_string_put(game->mlx, game->win, 10, 60, 0x00FF00,
+		mlx_string_put(game->mlx, game->win, 10, 60, 0xFF8800,
 			"Find the exit!");
 	if (game->time_remaining > 5)
-		timer_color = 0x00FF00;
+		timer_color = 0xFF8800;
 	else if (game->time_remaining > 0)
 		timer_color = 0xFF6600;
 	else
@@ -64,6 +64,9 @@ static void	render_map_tiles(t_game *game, int x, int y)
 {
 	if (game->map[y][x] == '1')
 		mlx_put_image_to_window(game->mlx, game->win, game->wall_img,
+			x * TILE_SIZE, y * TILE_SIZE);
+	else if (game->map[y][x] == 'S')
+		mlx_put_image_to_window(game->mlx, game->win, game->stat_tile_img,
 			x * TILE_SIZE, y * TILE_SIZE);
 	else
 		mlx_put_image_to_window(game->mlx, game->win, game->floor_img,

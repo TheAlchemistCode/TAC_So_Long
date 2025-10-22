@@ -76,7 +76,7 @@ int	move_player(t_game *game, int new_x, int new_y)
 	if (new_x < 0 || new_x >= game->map_width
 		|| new_y < 0 || new_y >= game->map_height)
 		return (0);
-	if (game->map[new_y][new_x] == '1')
+	if (game->map[new_y][new_x] == '1' || game->map[new_y][new_x] == 'S')
 		return (0);
 	if (has_living_enemy_at(game, new_x, new_y))
 		return (0);

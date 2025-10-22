@@ -25,6 +25,8 @@ static int	is_walkable(t_flood_data *data, int x, int y)
 {
 	if (data->map[y][x] == '1')
 		return (0);
+	if (data->map[y][x] == 'S')
+		return (0);
 	if (data->map[y][x] == 'V')
 		return (0);
 	return (1);
