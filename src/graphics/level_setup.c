@@ -56,7 +56,6 @@ static void	register_handlers(t_game *game)
 {
 	mlx_hook(game->win, 2, 1L << 0, key_press_handler, game);
 	mlx_hook(game->win, 17, 1L << 17, close_wrapper, game);
-	set_game_pointer(game);
 }
 
 void	init_next_level(t_game *game, char *map_path)
