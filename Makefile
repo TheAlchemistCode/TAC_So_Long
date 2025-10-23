@@ -39,7 +39,7 @@ $(NAME): $(OBJ) $(MLX_LIB) $(LIBFT_LIB)
 $(MLX_LIB):
 	@if [ ! -f $(MLX_LIB) ]; then \
 		echo "Building MiniLibX..."; \
-		cd $(MLX_DIR) && chmod +x configure && ./configure && make -f makefile.gen; \
+		cd $(MLX_DIR) && chmod +x configure && ./configure && make -f Makefile.gen; \
 	fi
 
 $(LIBFT_LIB):
